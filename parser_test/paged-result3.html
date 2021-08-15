@@ -1,0 +1,829 @@
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+        <title>eancodeboek 1.0.7</title>
+        <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans">
+        <LINK REL="stylesheet" HREF="/eancodeboek/stylesheet/ech.css" TYPE="text/css">
+        <script language="JavaScript" type="text/javascript">
+            function validateForm() {
+                //Validation rules
+                doSubmit = true;
+                alertValue = "";
+                
+                // Validation of the input fields
+                if (!ZoekForm.postcode.value.length < 1) {
+                    re = /^[1-9]{1}[0-9]{3}[a-z|A-Z]{2}/;
+                    if (re.test(ZoekForm.postcode.value)) {
+                         // Submit is true
+                    } else {
+                        alertValue = alertValue + "Ongeldige waarde in Postcode. ";
+                        doSubmit = false;
+                    }
+                }
+                
+                if (!ZoekForm.huisnummer.value.length < 1) {
+                    if (isNaN(ZoekForm.huisnummer.value)) {
+                        alertValue = alertValue + "Ongeldige waarde in Huisnummer. ";
+                        doSubmit = false;
+                    }
+                }
+                
+                if (!ZoekForm.huisnummertoevoeging.value.length < 1) {
+                    re = /^[a-z|A-Z|0-9| \.\+\/-]*$/;
+                    if (re.test(ZoekForm.huisnummertoevoeging.value)) {
+                        // Submit is true
+                    } else {
+                       alertValue = alertValue + "Ongeldige waarde in Huisnummertoevoeging. ";
+                       doSubmit = false;
+                    }
+                }
+                
+                if (!ZoekForm.straatnaam.value.length < 1) {
+                    re = /^[a-z|A-Z|0-9|éôâáäöüïß \'-\.\/\&]*$/;
+                    if (re.test(ZoekForm.straatnaam.value)) {
+                          // Submit is true
+                    } else {
+                        alertValue = alertValue + "Ongeldige waarde in Straatnaam. ";
+                        doSubmit = false;
+                    }
+                }
+                
+                if (!ZoekForm.woonplaats.value.length < 1) {
+                    re = /^[a-z|A-Z|0-9| \'\.-]*$/;
+                    if (re.test(ZoekForm.woonplaats.value)) {
+                          // Submit is true
+                    } else {
+                        alertValue = alertValue + "Ongeldige waarde in Woonplaats. ";
+                        doSubmit = false;
+                    }
+                }
+                
+                // Validation on search combinations
+                if (!ZoekForm.postcode.value.length < 1) {
+                    if (!ZoekForm.huisnummer.value.length < 1) {
+                        // Huisnummer is ingevuld
+                    } else {
+                        // Submit is false
+                        alertValue = alertValue + "De opgegeven combinatie van zoekcriteria is niet toegestaan. ";
+                        doSubmit = false;
+                    }
+                } else if (!ZoekForm.woonplaats.value.length < 1) {
+                     
+                    if (!ZoekForm.straatnaam.value.length < 1) {
+                        if (!ZoekForm.huisnummer.value.length < 1) {
+                            if (ZoekForm.bijzondereaansluiting[0].checked == true) {
+                                alertValue = alertValue + "De opgegeven combinatie van zoekcriteria is niet toegestaan. ";
+                                doSubmit = false;
+                            }
+                            if (ZoekForm.bijzondereaansluiting[1].checked == true) {
+                                alertValue = alertValue + "De opgegeven combinatie van zoekcriteria is niet toegestaan. ";
+                                doSubmit = false;
+                            }
+                            // Submit is true
+                        } else {
+                            alertValue = alertValue + "De opgegeven combinatie van zoekcriteria is niet toegestaan. ";
+                            doSubmit = false;
+                        }
+                    } else if (ZoekForm.bijzondereaansluiting[0].checked == true) {
+                        // Submit is true
+                    } else {
+                        alertValue = alertValue + "De opgegeven combinatie van zoekcriteria is niet toegestaan. ";
+                        doSubmit = false;
+                    }
+                } else {
+                    alertValue = alertValue + "De opgegeven combinatie van zoekcriteria is niet toegestaan. ";
+                    doSubmit = false;
+                }
+                
+                if (doSubmit == false) {
+                    alert(alertValue);
+                }
+
+                return doSubmit;
+            }
+
+            function resetForm() {
+                ZoekForm.postcode.value = "";
+                ZoekForm.huisnummer.value = "";
+                ZoekForm.straatnaam.value = "";
+                ZoekForm.woonplaats.value = "";
+                ZoekForm.huisnummertoevoeging.value = "";
+                ZoekForm.bijzondereaansluiting.value = "-";
+                ZoekForm.marktsegment.value = "23";
+
+                document.getElementById("resultTable").innerHTML =
+                        '<table class="pagingTable"><tr><td>&nbsp;</td><td style="color: white;">Er zijn geen resultaten gevonden</td></tr></table>';
+            }
+        </script>
+    </head>
+    <body>
+        <div class="doc">
+            <form name="ZoekForm" method="post" action="/eancodeboek/control/index" onSubmit="return validateForm()">
+                <div class="nameless"><!-- 2 blokken -->
+                    <div class="textAndLogo">
+                        <!-- IE does not recognize css content url, so the below address must be absolute or IE won't show the logo; 
+                                 only use localhost url, not the file. Don't use alt because it breaks the image in IE.
+                        -->
+
+                        <a href="https://www.edsn.nl"><img id="logo" src="/eancodeboek/img/EDSN.png"/></a> <!-- deze src is voor ff+IE, de #logo fixt logo voor chrome -->
+                        <div class="title">HET EAN-CODEBOEK</div>
+                        <div class="text1">
+                            Met behulp van deze dienst kunt u een 'aansluiting identificatie code' 
+                            (eancode) opzoeken van een aansluiting op het elektriciteitsnet en 
+                            gasnet van Nederland. De informatie is eigendom van de netbeheerders 
+                            en wordt maandelijks bijgewerkt.
+                        </div><!-- text1 -->
+                        <div class="text2">
+                            De in het eancodeboek opgenomen informatie wordt door de gebruiker geheel 
+                            voor eigen risico gebruikt. De informatie die beschikbaar wordt gesteld 
+                            middels het eancodeboek, is geheel voor eigen risico. Hieraan kunnen 
+                            op geen enkele manier rechten worden ontleend. Schade ontstaan bij of 
+                            door gebruik van de in het eancodeboek vermelde gegevens, kan op geen 
+                            enkele wijze voor rekening van Energie Data Services Nederland komen. 
+                            De algemene voorwaarden van Energie Data Services Nederland zijn volledig 
+                            van toepassing.
+                        </div><!-- text2 -->
+                    </div><!-- textAndLogo -->
+
+                    <div class="navi-zoeken-uitleg">
+                        <div class="navi-zoeken"><a style="text-decoration: none;" href="/eancodeboek/control/index">Zoeken</a></div>
+                        <div class="navi-white1">&nbsp;</div>
+                        <div class="navi-uitleg">
+                            <a style="text-decoration: none;" href="/eancodeboek/control/uitleg">
+                                <span style="color: white;">Uitleg&nbsp;bij&nbsp;Zoeken</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="zoeken-form-table">
+                        <div class="zoeken-form">
+                            <input type="hidden" name="zoekform" value="true">
+                            <table style="width: 850px; margin-bottom: 20px;">
+                                <tr>
+                                    <td colspan="3"> <div class="zoeken-header">Zoeken</div></td>
+                                </tr>
+                                <tr>
+                                    <td width="190" valign="top" class="fieldname">
+                                        <label for="postcode">Postcode</label>
+                                    </td>
+                                    <td width="300" valign="top">
+                                        <input type="text" maxlength="6" size="25" name="postcode" value="6903XE">
+                                    </td>
+                                    <td ROWSPAN="6" width="360">
+                                        <div class="cal-waarde">Zoekt u de Calorische Waarden 
+                                            <br>welke bij uw Gas-aansluiting
+                                            <br>horen? Klik dan <a tabindex="-1" href="https://mijnenergiedata.nl/calorische-gaswaarden">hier</a>.
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td valign="top" class="fieldname">
+                                        <label for="huisnummer">Huisnummer</label>
+                                    </td>
+                                    <td valign="top">
+                                        <input type="text" maxlength="5" size="25" name="huisnummer" value="1">
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td valign="top" class="fieldname">
+                                        <label for="toevoeging">Huisnummertoevoeging</label>
+                                    </td>
+                                    <td valign="top">
+                                        <input type="text" maxlength="6" size="25" name="huisnummertoevoeging" value="">
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td valign="top" class="fieldname">
+                                        <label for="straatnaam">Straatnaam</label>
+                                    </td>
+                                    <td valign="top">
+                                        <input type="text" maxlength="46" size="25" name="straatnaam" value="">
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td valign="top" class="fieldname">
+                                        <label for="woonplaats">Woonplaats</label>
+                                    </td>
+                                    <td valign="top">
+                                        <input type="text" maxlength="24" size="25" name="woonplaats" value="">
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td valign="top" class="fieldname">
+                                        <label for="aansluiting">Bijzondere aansluiting</label>
+                                    </td>
+                                    <td valign="top">
+                                        
+                                            
+                                            
+                                            
+                                                <input type="radio" name="bijzondereaansluiting" value="1" class="radio"/><label class="radiolabel">Ja</label>
+                                                <input type="radio" name="bijzondereaansluiting" value="0" class="radio"/><label class="radiolabel">Nee</label>
+                                                <input type="radio" name="bijzondereaansluiting" value="-" checked class="radio"/><label class="radiolabel">NVT</label>
+                                            
+                                        
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td valign="top" class="fieldname">
+                                        <label for="marktsegment">Productsoort</label>
+                                    </td>
+                                    <td valign="top">
+                                        <select name="marktsegment">
+                                            
+                                                
+                                                
+                                                    <option value="23" selected>Elektriciteit</option>
+                                                    <option value="27">Gas</option>
+                                                
+                                            
+                                        </select>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div id="submit-clear-button-row">
+                                <button class="submit-clear-knop" type="submit" name="submit" value="submit" title="Submit" alt="Submit">Zoeken</button>
+                                &nbsp;&nbsp;
+                                <button class="submit-clear-knop" onclick="resetForm(); return false;" Title="Reset" alt="Reset">Reset</button>
+                                <br><br>
+                            </div><!-- submit-clear-button-row -->
+                        </div> <!--class="zoeken-form" -->				
+                    </div> <!-- zoeken-form-table -->
+
+                    <div id="resultTable">
+                        
+
+                        
+                            <div id="paginering">
+                                &nbsp;
+                                
+                                    
+                                        
+                                        <img src="/eancodeboek/img/backa.jpg">
+                                    
+                                
+                                &nbsp;
+                                Pagina 1 van 4
+                                &nbsp;
+                                
+                                    
+                                        <button name="next" title="Next" value="next" type="submit"><img src="/eancodeboek/img/fwd.png" alt="Next"></button>
+                                        
+                                        
+                                
+                            </div>
+                        
+
+                        
+                            <table cellspacing="1" cellpadding="1" border="0" width="100%">
+                                <thead>
+                                    <tr valign="bottom">
+                                        <th class="resultHeader">EAN code aansluiting</th>
+                                        <th class="resultHeader">Straatnaam</th>
+                                        <th class="resultHeader">Huisnr.</th>
+                                        <th class="resultHeader">Toev.</th>
+                                        <th class="resultHeader">Woonplaats</th>
+                                        <th class="resultHeader">Postcode</th>
+                                        <th class="resultHeader">Bijz. aansl.</th>
+                                        <th class="resultHeader">Product</th>
+                                        <th class="resultHeader">Netbeheerder</th>
+                                        <th class="resultHeader">EAN Netbeheerder</th>
+                                        <th class="resultHeader">EAN gekoppelde PAP</th>
+                                    </tr>
+                                    <tr height=1>
+                                        <th bgcolor=#FEEAD3 colspan=11></th>
+                                    </tr>
+                                    <tr height=2>
+                                        <th colspan=11></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                        <tr bgcolor=#E5F0E7>
+                                            <td class="resultData">871687120056197178</td>
+                                            <td class="resultData">Kuilsmaat</td>
+                                            <td class="resultData">1</td>
+                                            <td class="resultData"></td>
+                                            <td class="resultData">ZEVENAAR</td>
+                                            <td class="resultData">6903XE</td>
+                                            
+                                                
+                                                    <td class="resultData">Nee</td>
+                                                
+                                                
+                                                
+                                            
+                                            
+                                                
+                                                    <td class="resultData">ELEK</td>
+                                                
+                                                
+                                            
+                                            <td class="resultData">Liander NB</td>
+                                            <td class="resultData">8716871000002</td>
+                                            <td class="resultData"></td>
+                                        </tr>
+                                    
+                                        <tr bgcolor=#E5F0E7>
+                                            <td class="resultData">871687120056197185</td>
+                                            <td class="resultData">Kuilsmaat</td>
+                                            <td class="resultData">1</td>
+                                            <td class="resultData">101</td>
+                                            <td class="resultData">ZEVENAAR</td>
+                                            <td class="resultData">6903XE</td>
+                                            
+                                                
+                                                    <td class="resultData">Nee</td>
+                                                
+                                                
+                                                
+                                            
+                                            
+                                                
+                                                    <td class="resultData">ELEK</td>
+                                                
+                                                
+                                            
+                                            <td class="resultData">Liander NB</td>
+                                            <td class="resultData">8716871000002</td>
+                                            <td class="resultData"></td>
+                                        </tr>
+                                    
+                                        <tr bgcolor=#E5F0E7>
+                                            <td class="resultData">871687120056197192</td>
+                                            <td class="resultData">Kuilsmaat</td>
+                                            <td class="resultData">1</td>
+                                            <td class="resultData">102</td>
+                                            <td class="resultData">ZEVENAAR</td>
+                                            <td class="resultData">6903XE</td>
+                                            
+                                                
+                                                    <td class="resultData">Nee</td>
+                                                
+                                                
+                                                
+                                            
+                                            
+                                                
+                                                    <td class="resultData">ELEK</td>
+                                                
+                                                
+                                            
+                                            <td class="resultData">Liander NB</td>
+                                            <td class="resultData">8716871000002</td>
+                                            <td class="resultData"></td>
+                                        </tr>
+                                    
+                                        <tr bgcolor=#E5F0E7>
+                                            <td class="resultData">871687120056197208</td>
+                                            <td class="resultData">Kuilsmaat</td>
+                                            <td class="resultData">1</td>
+                                            <td class="resultData">103</td>
+                                            <td class="resultData">ZEVENAAR</td>
+                                            <td class="resultData">6903XE</td>
+                                            
+                                                
+                                                    <td class="resultData">Nee</td>
+                                                
+                                                
+                                                
+                                            
+                                            
+                                                
+                                                    <td class="resultData">ELEK</td>
+                                                
+                                                
+                                            
+                                            <td class="resultData">Liander NB</td>
+                                            <td class="resultData">8716871000002</td>
+                                            <td class="resultData"></td>
+                                        </tr>
+                                    
+                                        <tr bgcolor=#E5F0E7>
+                                            <td class="resultData">871687120056197215</td>
+                                            <td class="resultData">Kuilsmaat</td>
+                                            <td class="resultData">1</td>
+                                            <td class="resultData">104</td>
+                                            <td class="resultData">ZEVENAAR</td>
+                                            <td class="resultData">6903XE</td>
+                                            
+                                                
+                                                    <td class="resultData">Nee</td>
+                                                
+                                                
+                                                
+                                            
+                                            
+                                                
+                                                    <td class="resultData">ELEK</td>
+                                                
+                                                
+                                            
+                                            <td class="resultData">Liander NB</td>
+                                            <td class="resultData">8716871000002</td>
+                                            <td class="resultData"></td>
+                                        </tr>
+                                    
+                                        <tr bgcolor=#E5F0E7>
+                                            <td class="resultData">871687120056197222</td>
+                                            <td class="resultData">Kuilsmaat</td>
+                                            <td class="resultData">1</td>
+                                            <td class="resultData">105</td>
+                                            <td class="resultData">ZEVENAAR</td>
+                                            <td class="resultData">6903XE</td>
+                                            
+                                                
+                                                    <td class="resultData">Nee</td>
+                                                
+                                                
+                                                
+                                            
+                                            
+                                                
+                                                    <td class="resultData">ELEK</td>
+                                                
+                                                
+                                            
+                                            <td class="resultData">Liander NB</td>
+                                            <td class="resultData">8716871000002</td>
+                                            <td class="resultData"></td>
+                                        </tr>
+                                    
+                                        <tr bgcolor=#E5F0E7>
+                                            <td class="resultData">871687120056197239</td>
+                                            <td class="resultData">Kuilsmaat</td>
+                                            <td class="resultData">1</td>
+                                            <td class="resultData">106</td>
+                                            <td class="resultData">ZEVENAAR</td>
+                                            <td class="resultData">6903XE</td>
+                                            
+                                                
+                                                    <td class="resultData">Nee</td>
+                                                
+                                                
+                                                
+                                            
+                                            
+                                                
+                                                    <td class="resultData">ELEK</td>
+                                                
+                                                
+                                            
+                                            <td class="resultData">Liander NB</td>
+                                            <td class="resultData">8716871000002</td>
+                                            <td class="resultData"></td>
+                                        </tr>
+                                    
+                                        <tr bgcolor=#E5F0E7>
+                                            <td class="resultData">871687110001846510</td>
+                                            <td class="resultData">Kuilsmaat</td>
+                                            <td class="resultData">1</td>
+                                            <td class="resultData">106</td>
+                                            <td class="resultData">ZEVENAAR</td>
+                                            <td class="resultData">6903XE</td>
+                                            
+                                                
+                                                    <td class="resultData">Nee</td>
+                                                
+                                                
+                                                
+                                            
+                                            
+                                                
+                                                    <td class="resultData">ELEK</td>
+                                                
+                                                
+                                            
+                                            <td class="resultData">Liander NB</td>
+                                            <td class="resultData">8716871000002</td>
+                                            <td class="resultData"></td>
+                                        </tr>
+                                    
+                                        <tr bgcolor=#E5F0E7>
+                                            <td class="resultData">871687120056197246</td>
+                                            <td class="resultData">Kuilsmaat</td>
+                                            <td class="resultData">1</td>
+                                            <td class="resultData">107</td>
+                                            <td class="resultData">ZEVENAAR</td>
+                                            <td class="resultData">6903XE</td>
+                                            
+                                                
+                                                    <td class="resultData">Nee</td>
+                                                
+                                                
+                                                
+                                            
+                                            
+                                                
+                                                    <td class="resultData">ELEK</td>
+                                                
+                                                
+                                            
+                                            <td class="resultData">Liander NB</td>
+                                            <td class="resultData">8716871000002</td>
+                                            <td class="resultData"></td>
+                                        </tr>
+                                    
+                                        <tr bgcolor=#E5F0E7>
+                                            <td class="resultData">871687120056197253</td>
+                                            <td class="resultData">Kuilsmaat</td>
+                                            <td class="resultData">1</td>
+                                            <td class="resultData">108</td>
+                                            <td class="resultData">ZEVENAAR</td>
+                                            <td class="resultData">6903XE</td>
+                                            
+                                                
+                                                    <td class="resultData">Nee</td>
+                                                
+                                                
+                                                
+                                            
+                                            
+                                                
+                                                    <td class="resultData">ELEK</td>
+                                                
+                                                
+                                            
+                                            <td class="resultData">Liander NB</td>
+                                            <td class="resultData">8716871000002</td>
+                                            <td class="resultData"></td>
+                                        </tr>
+                                    
+                                        <tr bgcolor=#E5F0E7>
+                                            <td class="resultData">871687120056197260</td>
+                                            <td class="resultData">Kuilsmaat</td>
+                                            <td class="resultData">1</td>
+                                            <td class="resultData">109</td>
+                                            <td class="resultData">ZEVENAAR</td>
+                                            <td class="resultData">6903XE</td>
+                                            
+                                                
+                                                    <td class="resultData">Nee</td>
+                                                
+                                                
+                                                
+                                            
+                                            
+                                                
+                                                    <td class="resultData">ELEK</td>
+                                                
+                                                
+                                            
+                                            <td class="resultData">Liander NB</td>
+                                            <td class="resultData">8716871000002</td>
+                                            <td class="resultData"></td>
+                                        </tr>
+                                    
+                                        <tr bgcolor=#E5F0E7>
+                                            <td class="resultData">871687120056197307</td>
+                                            <td class="resultData">Kuilsmaat</td>
+                                            <td class="resultData">1</td>
+                                            <td class="resultData">110</td>
+                                            <td class="resultData">ZEVENAAR</td>
+                                            <td class="resultData">6903XE</td>
+                                            
+                                                
+                                                    <td class="resultData">Nee</td>
+                                                
+                                                
+                                                
+                                            
+                                            
+                                                
+                                                    <td class="resultData">ELEK</td>
+                                                
+                                                
+                                            
+                                            <td class="resultData">Liander NB</td>
+                                            <td class="resultData">8716871000002</td>
+                                            <td class="resultData"></td>
+                                        </tr>
+                                    
+                                        <tr bgcolor=#E5F0E7>
+                                            <td class="resultData">871687120056197291</td>
+                                            <td class="resultData">Kuilsmaat</td>
+                                            <td class="resultData">1</td>
+                                            <td class="resultData">111</td>
+                                            <td class="resultData">ZEVENAAR</td>
+                                            <td class="resultData">6903XE</td>
+                                            
+                                                
+                                                    <td class="resultData">Nee</td>
+                                                
+                                                
+                                                
+                                            
+                                            
+                                                
+                                                    <td class="resultData">ELEK</td>
+                                                
+                                                
+                                            
+                                            <td class="resultData">Liander NB</td>
+                                            <td class="resultData">8716871000002</td>
+                                            <td class="resultData"></td>
+                                        </tr>
+                                    
+                                        <tr bgcolor=#E5F0E7>
+                                            <td class="resultData">871687120056197284</td>
+                                            <td class="resultData">Kuilsmaat</td>
+                                            <td class="resultData">1</td>
+                                            <td class="resultData">112</td>
+                                            <td class="resultData">ZEVENAAR</td>
+                                            <td class="resultData">6903XE</td>
+                                            
+                                                
+                                                    <td class="resultData">Nee</td>
+                                                
+                                                
+                                                
+                                            
+                                            
+                                                
+                                                    <td class="resultData">ELEK</td>
+                                                
+                                                
+                                            
+                                            <td class="resultData">Liander NB</td>
+                                            <td class="resultData">8716871000002</td>
+                                            <td class="resultData"></td>
+                                        </tr>
+                                    
+                                        <tr bgcolor=#E5F0E7>
+                                            <td class="resultData">871687120056197277</td>
+                                            <td class="resultData">Kuilsmaat</td>
+                                            <td class="resultData">1</td>
+                                            <td class="resultData">113</td>
+                                            <td class="resultData">ZEVENAAR</td>
+                                            <td class="resultData">6903XE</td>
+                                            
+                                                
+                                                    <td class="resultData">Nee</td>
+                                                
+                                                
+                                                
+                                            
+                                            
+                                                
+                                                    <td class="resultData">ELEK</td>
+                                                
+                                                
+                                            
+                                            <td class="resultData">Liander NB</td>
+                                            <td class="resultData">8716871000002</td>
+                                            <td class="resultData"></td>
+                                        </tr>
+                                    
+                                        <tr bgcolor=#E5F0E7>
+                                            <td class="resultData">871687120056197314</td>
+                                            <td class="resultData">Kuilsmaat</td>
+                                            <td class="resultData">1</td>
+                                            <td class="resultData">114</td>
+                                            <td class="resultData">ZEVENAAR</td>
+                                            <td class="resultData">6903XE</td>
+                                            
+                                                
+                                                    <td class="resultData">Nee</td>
+                                                
+                                                
+                                                
+                                            
+                                            
+                                                
+                                                    <td class="resultData">ELEK</td>
+                                                
+                                                
+                                            
+                                            <td class="resultData">Liander NB</td>
+                                            <td class="resultData">8716871000002</td>
+                                            <td class="resultData"></td>
+                                        </tr>
+                                    
+                                        <tr bgcolor=#E5F0E7>
+                                            <td class="resultData">871687120056197321</td>
+                                            <td class="resultData">Kuilsmaat</td>
+                                            <td class="resultData">1</td>
+                                            <td class="resultData">115</td>
+                                            <td class="resultData">ZEVENAAR</td>
+                                            <td class="resultData">6903XE</td>
+                                            
+                                                
+                                                    <td class="resultData">Nee</td>
+                                                
+                                                
+                                                
+                                            
+                                            
+                                                
+                                                    <td class="resultData">ELEK</td>
+                                                
+                                                
+                                            
+                                            <td class="resultData">Liander NB</td>
+                                            <td class="resultData">8716871000002</td>
+                                            <td class="resultData"></td>
+                                        </tr>
+                                    
+                                        <tr bgcolor=#E5F0E7>
+                                            <td class="resultData">871687120056197338</td>
+                                            <td class="resultData">Kuilsmaat</td>
+                                            <td class="resultData">1</td>
+                                            <td class="resultData">116</td>
+                                            <td class="resultData">ZEVENAAR</td>
+                                            <td class="resultData">6903XE</td>
+                                            
+                                                
+                                                    <td class="resultData">Nee</td>
+                                                
+                                                
+                                                
+                                            
+                                            
+                                                
+                                                    <td class="resultData">ELEK</td>
+                                                
+                                                
+                                            
+                                            <td class="resultData">Liander NB</td>
+                                            <td class="resultData">8716871000002</td>
+                                            <td class="resultData"></td>
+                                        </tr>
+                                    
+                                        <tr bgcolor=#E5F0E7>
+                                            <td class="resultData">871687120056197345</td>
+                                            <td class="resultData">Kuilsmaat</td>
+                                            <td class="resultData">1</td>
+                                            <td class="resultData">117</td>
+                                            <td class="resultData">ZEVENAAR</td>
+                                            <td class="resultData">6903XE</td>
+                                            
+                                                
+                                                    <td class="resultData">Nee</td>
+                                                
+                                                
+                                                
+                                            
+                                            
+                                                
+                                                    <td class="resultData">ELEK</td>
+                                                
+                                                
+                                            
+                                            <td class="resultData">Liander NB</td>
+                                            <td class="resultData">8716871000002</td>
+                                            <td class="resultData"></td>
+                                        </tr>
+                                    
+                                        <tr bgcolor=#E5F0E7>
+                                            <td class="resultData">871687120056197352</td>
+                                            <td class="resultData">Kuilsmaat</td>
+                                            <td class="resultData">1</td>
+                                            <td class="resultData">201</td>
+                                            <td class="resultData">ZEVENAAR</td>
+                                            <td class="resultData">6903XE</td>
+                                            
+                                                
+                                                    <td class="resultData">Nee</td>
+                                                
+                                                
+                                                
+                                            
+                                            
+                                                
+                                                    <td class="resultData">ELEK</td>
+                                                
+                                                
+                                            
+                                            <td class="resultData">Liander NB</td>
+                                            <td class="resultData">8716871000002</td>
+                                            <td class="resultData"></td>
+                                        </tr>
+                                    
+                                </tbody>
+                            </table>
+                        
+                    </div><!-- resultTable -->
+                    <div class="footer" style="background-color: white;">
+                        <div class="copyright">
+                            <a href="http://www.edsn.nl/disclaimer/" class="disclaimer" target="_parent">Disclaimer</a> &copy; 2021  Energie Data Services Nederland | Alle rechten voorbehouden
+                        </div>
+                    </div><!-- footer -->
+                </div><!-- nameless -->
+            </form>
+        </div><!-- doc -->
+    </body>
+</html>

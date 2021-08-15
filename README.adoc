@@ -1,0 +1,16 @@
+= EAN codeboook scraper
+:toc:
+:toclevels: 4
+:sectnums:
+:author: Stern itc
+:title: {doctitle}
+:title-page:
+:revnumber: 1.0
+:revdate: 14-08-2021
+
+== Synopsis
+This project (C#) uses postalcode and house number to retrieve possible EAN's at the identified address.
+
+== Requests
+
+include::documentation/index.adoc[leveloffset=2]

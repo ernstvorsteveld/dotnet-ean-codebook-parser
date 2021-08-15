@@ -1,0 +1,24 @@
+= Requests
+
+== Request
+
+.Single page result
+[code,sh]
+----
+curl -X POST 'https://www.eancodeboek.nl/eancodeboek/control/index?postcode=6412PP&huisnummer=10&marktsegment=23&bijzondereaansluiting=-&zoekform=true' -v
+----
+
+.Mutliple pages result - first page
+[code,sh]
+----
+curl -X POST 'https://www.eancodeboek.nl/eancodeboek/control/index?postcode=6903XE&huisnummer=1&marktsegment=23&bijzondereaansluiting=-&zoekform=true' -v
+----
+
+The first request returns a cookie. Use this cookie in the subsequent requests for retrieval of the next page(s).
+
+.Mutliple pages result - next pages
+[code,sh]
+----
+curl -H "Cookie: JSESSIONID=7EC0F0304C0628C2CAFA81A5B392B1C7" \
+-X POST 'https://www.eancodeboek.nl/eancodeboek/control/index?postcode=6903XE&huisnummer=1&marktsegment=23&bijzondereaansluiting=-&zoekform=true&next=next' -v
+----
