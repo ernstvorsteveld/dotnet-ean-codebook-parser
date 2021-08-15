@@ -1,7 +1,7 @@
 == Command line
 
 .Create new empty project:
-`dotnet new classlib -o parser_specflow`
+`dotnet new classlib -o src/parser_specflow`
 
 .Add project to solution:
-`dotnet sln add  parser_specflow/parser_specflow.csproj`
+`dotnet sln add  src/parser_specflow/parser_specflow.csproj`
