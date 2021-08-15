@@ -5,3 +5,6 @@
 
 .Add project to solution:
 `dotnet sln add  src/parser_specflow/parser_specflow.csproj`
+
+.Add reference
+dotnet add ./src/parser_specflow/parser_specflow.csproj reference ./src/parser/parser.csproj
