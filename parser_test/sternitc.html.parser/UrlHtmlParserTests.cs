@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities.ObjectModel;
 
 namespace parser_test.sternitc.html.parser
 {
-    public class UrlHtmlParserTests
+    public class UrlHtmlParserTests : BaseUrlHtmlParserTests
     {
         [Theory]
         [InlineData("6412PP", "10", "23", "871688540030933384", "871688540004448586")]
@@ -35,30 +35,6 @@ namespace parser_test.sternitc.html.parser
             
             var results = new UrlHtmlParser(config).Parse(criteria).ToList();
             results.Count.Should().Be(73);
-        }
-
-        private static ParserConfiguration BuildConfiguration(string url, string pagingUrl, string domain)
-        {
-            return new ParserConfigurationBuilder()
-                .WithConfig(ConfigurationKey.URL, url)
-                .WithConfig(ConfigurationKey.PAGING_URL, pagingUrl)
-                .WithConfig(ConfigurationKey.DOMAIN, domain)
-                .WithConfig(ConfigurationKey.TABLE_HEADER, ".//th[@class='resultHeader']")
-                .WithConfig(ConfigurationKey.TABLE_ROW, ".//tbody/tr")
-                .WithConfig(ConfigurationKey.TABLE_ROW_TD, "td")
-                .WithConfig(ConfigurationKey.DIV_PAGING, ".//div[@id='paginering']")
-                .Build();
-        }
-
-        private (string, string, string, string) GivenConfiguration()
-        {
-            const string scheme = "https";
-            const string domain = "www.eancodeboek.nl";
-            const string url = scheme + "://" + domain + "/eancodeboek/control/index" +
-                               "?postcode={0}&huisnummer={1}&marktsegment={2}" +
-                               "&bijzondereaansluiting=-&zoekform=true";
-            const string pagingUrl = url + "&next=next";
-            return (scheme, domain, url, pagingUrl);
         }
     }
 }
