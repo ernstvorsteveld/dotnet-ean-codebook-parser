@@ -11,6 +11,6 @@
 == Synopsis
 This project (C#) uses postalcode and house number to retrieve possible EAN's at the identified address.
 
-== Requests
+include::documentation/ean-codebook.adoc[leveloffset=2]
 
 include::documentation/index.adoc[leveloffset=2]

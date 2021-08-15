@@ -1,0 +1,26 @@
+= EAN Codebook
+
+== Overview
+The EAN codebook is a website created due to ACM regulations. One of the statements in the ACM regulations regarding the energy market is to provide a website where anybody can lookup the EAN codes of their energy meters at any address in the Netherlands.
+
+https://www.eancodeboek.nl/eancodeboek/control/index[The ENA Codebook site is here]
+
+== Details
+
+.Values
+[%header,cols="1,6,6"]
+|===
+
+| Attribute
+| Description
+| Value
+
+| marktsegment
+| Energy or Gaz
+a| Possible values:
+
+* `gas`: 27
+* `elektriciteit`: 23 
+
+|===
+
