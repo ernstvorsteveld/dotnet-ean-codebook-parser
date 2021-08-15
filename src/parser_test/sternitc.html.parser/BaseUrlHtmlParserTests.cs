@@ -17,7 +17,7 @@ namespace parser_test.sternitc.html.parser
                 .Build();
         }
 
-        protected (string, string, string, string) GivenConfiguration()
+        protected (string, string, string) GivenConfiguration()
         {
             const string scheme = "https";
             const string domain = "www.eancodeboek.nl";
@@ -25,7 +25,7 @@ namespace parser_test.sternitc.html.parser
                                "?postcode={0}&huisnummer={1}&marktsegment={2}" +
                                "&bijzondereaansluiting=-&zoekform=true";
             const string pagingUrl = url + "&next=next";
-            return (scheme, domain, url, pagingUrl);
+            return (domain, url, pagingUrl);
         }
     }
 }

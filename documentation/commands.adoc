@@ -7,4 +7,13 @@
 `dotnet sln add  src/parser_specflow/parser_specflow.csproj`
 
 .Add reference
-dotnet add ./src/parser_specflow/parser_specflow.csproj reference ./src/parser/parser.csproj
+`dotnet add ./src/parser_specflow/parser_specflow.csproj reference ./src/parser/parser.csproj`
+
+.Add dependencies
+`cd src/parser_specflow`
+
+`dotnet add package xunit --version 2.4.1`
+
+`dotnet add package FluentAssertions --version 6.0.0`
+
+`dotnet add package SpecFlow --version 3.9.22`

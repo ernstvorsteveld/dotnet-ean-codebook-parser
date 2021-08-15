@@ -2,6 +2,14 @@
 
   <ItemGroup>
     <ProjectReference Include="..\parser\parser.csproj" />
+    <ProjectReference Include="..\parser_test\parser_test.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="6.0.0" />
+    <PackageReference Include="SpecFlow" Version="3.9.22" />
+    <PackageReference Include="SpecFlow.xUnit" Version="3.9.22" />
+    <PackageReference Include="xunit" Version="2.4.1" />
   </ItemGroup>
 
   <PropertyGroup>

@@ -13,7 +13,7 @@ namespace parser_test.sternitc.html.parser
         [InlineData("6412PP", "10", "27", "871688540008568259", "871688540030933391")]
         public void should_load_html_page(string postalcode, string number, string segment, string ean1, string ean2)
         {
-            var (scheme, domain, url, pagingUrl) = GivenConfiguration();
+            var (domain, url, pagingUrl) = GivenConfiguration();
             var config = BuildConfiguration(url, pagingUrl, domain);
             var criteria = new EANSearchCriteria(postalcode, number, segment);
 
@@ -29,7 +29,7 @@ namespace parser_test.sternitc.html.parser
         [Fact]
         public void should_load_html_page_paged()
         {
-            var (scheme, domain, url, pagingUrl) = GivenConfiguration();
+            var (domain, url, pagingUrl) = GivenConfiguration();
             var config = BuildConfiguration(url, pagingUrl, domain);
             var criteria = new EANSearchCriteria("6903XE", "1", "23");
             
