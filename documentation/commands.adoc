@@ -17,3 +17,12 @@
 `dotnet add package FluentAssertions --version 6.0.0`
 
 `dotnet add package SpecFlow --version 3.9.22`
+
+== Specflow related
+
+[source,bash]
+----
+livingdoc feature-folder ./../../.. -t parser_specflow.runtimeconfig.json
+
+livingdoc test-assembly ./parser_specflow.dll -t parser_specflow.runtimeconfig.json
+----
